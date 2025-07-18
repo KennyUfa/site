@@ -8,8 +8,19 @@
 }
 
 body {
-    min-height: 100vh;
     background: rgb(23, 23, 23);
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main,
+.about_me,
+.portfolio {
+    flex: 1 0 auto;
 }
 
 .header {
@@ -19,13 +30,10 @@ body {
     z-index: 10;
     display: flex;
     align-items: center;
-    margin: 0 auto;
     background: rgb(23, 23, 23);
 }
 
 .menu {
-    max-width: 900px;
-    margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -34,7 +42,7 @@ body {
 
 .name {
     color: rgb(255, 255, 255);
-    font-size: 36px;
+    font-size: 2rem;
     font-weight: 700;
 }
 
@@ -58,13 +66,11 @@ body {
 /* ================================ main ================================ */
 
 .main {
-    height: 500px;
+    max-height: 500px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-size: cover;
-    max-width: 900px;
-    margin: 0 auto;
     margin-top: 50px;
     padding: 0 20px;
 }
@@ -123,9 +129,7 @@ body {
 .about_me {
     background: #081f0d;
     border-radius: 24px;
-    margin: 100px auto 0;
-    padding: 32px 24px 24px 24px;
-    max-width: 900px;
+    padding: 24px;
     box-shadow: 0 0 15px rgba(28, 250, 95, 0.1);
 }
 
@@ -157,9 +161,7 @@ body {
 /* ======= portfolio ======= */
 
 .portfolio {
-    margin: 30px auto 0;
-    padding: 32px 24px 24px 24px;
-    max-width: 900px;
+    margin-top: 30px;
 }
 
 .portfolio_title {
@@ -195,34 +197,58 @@ body {
     font-size: 20px;
     font-weight: 700;
     text-align: center;
-    margin: 0px auto 18px;
     color: white;
 }
 
 .project_frame .descr {
     font-weight: 300;
     text-align: left;
-    margin: 0px auto 18px;
+    margin-top: 30px;
 }
 
 /* ======= footer ======= */
 .footer {
     width: 100%;
-    padding: 30px 0;
+    padding-top: 30px;
     text-align: center;
-    background: #111;
     color: #888;
     font-size: 14px;
-    border-top: 1px solid #222;
-    margin-top: 60px;
+    margin-top: auto;
 }
 
 .footer a {
     color: #1cba6b;
     text-decoration: none;
-    margin: 0 10px;
 }
 
 .footer a:hover {
     text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-photo {
+        min-width: 200px;
+        min-height: 200px;
+    }
+
+    .left_main {
+        width: 100%;
+        text-align: center;
+    }
+
+    .profile-photo {
+        width: 250px;
+        height: 250px;
+        margin-top: 50px;
+    }
+
+    .about_me {
+        margin-top: 50px;
+    }
+
 }
