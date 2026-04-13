@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Визажист | Dark Makeup</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+  <style>
+    :root {
+      --bg: #0d0d0f;
+      --panel: #17171b;
+      --accent: #9f7aea;
+      --text: #f2f2f3;
+      --muted: #b7b7be;
+      --line: #2a2a31;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1a1a21, #0c0c0f 45%);
+      color: var(--text);
+    }
+    .container { max-width: 1120px; margin: 0 auto; padding: 24px; }
+    .hero {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 32px;
+      align-items: center;
+      min-height: 80vh;
+    }
+    h1 { font-size: clamp(2rem, 5vw, 3.4rem); margin-bottom: 16px; }
+    .subtitle, .muted { color: var(--muted); line-height: 1.6; }
+    .hero-image, .about img, .portfolio img {
+      width: 100%;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      object-fit: cover;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+    }
+    .section-title { font-size: 1.7rem; margin: 48px 0 16px; }
+    .about { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 20px;
+    }
+    .price-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 14px 0;
+      border-bottom: 1px dashed var(--line);
+    }
+    .portfolio {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .contact-line { margin: 10px 0; }
+    footer { text-align: center; color: var(--muted); padding: 24px 0 40px; }
+    .btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 12px 20px;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      .hero, .about { grid-template-columns: 1fr; }
+      .hero { min-height: auto; padding-top: 16px; }
+    }
+  </style>
+</head>
+<body>
+{% verbatim %}
+<div id="app" class="container">
+  <section class="hero" v-if="content.hero_title">
+    <div>
+      <h1>{{ content.hero_title }}</h1>
+      <p class="subtitle">{{ content.hero_subtitle }}</p>
+      <a class="btn" :href="'tel:' + content.contact_phone">Записаться</a>
+    </div>
+    <img class="hero-image" :src="content.hero_image_url || placeholder('hero')" alt="Hero">
+  </section>
+
+  <section class="about card" v-if="content.about_text">
+    <img :src="content.about_image_url || placeholder('about')" alt="О визажисте">
+    <div>
+      <h2 class="section-title" style="margin-top:0">Обо мне</h2>
+      <p class="subtitle">{{ content.about_text }}</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Прайс-лист</h2>
+    <div class="card">
+      <div class="price-item" v-for="service in services" :key="service.id">
+        <div>
+          <strong>{{ service.title }}</strong>
+          <div class="muted">{{ service.description }}</div>
+        </div>
+        <strong>{{ formatPrice(service.price) }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Портфолио</h2>
+    <div class="portfolio">
+      <img v-for="item in portfolio" :key="item.id" :src="item.image_url" :alt="item.title || 'portfolio'">
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">Контакты</h2>
+    <div class="card">
+      <div class="contact-line">Телефон: {{ content.contact_phone }}</div>
+      <div class="contact-line">Email: {{ content.contact_email }}</div>
+      <div class="contact-line">Telegram: {{ content.contact_telegram }}</div>
+      <div class="contact-line">Адрес: {{ content.contact_address }}</div>
+      <p class="muted">Все поля, фото, цены и тексты редактируются через Django admin.</p>
+    </div>
+  </section>
+
+  <footer>© {{ new Date().getFullYear() }} Dark Makeup Studio</footer>
+</div>
+
+<script>
+const { createApp } = Vue
+
+createApp({
+  data() {
+    return {
+      content: {},
+      services: [],
+      portfolio: [],
+    }
+  },
+  methods: {
+    async loadData() {
+      const [contentRes, serviceRes, portfolioRes] = await Promise.all([
+        fetch('/api/content/').then(r => r.json()),
+        fetch('/api/services/').then(r => r.json()),
+        fetch('/api/portfolio/').then(r => r.json()),
+      ])
+      this.content = contentRes
+      this.services = serviceRes
+      this.portfolio = portfolioRes
+    },
+    formatPrice(price) {
+      return `${Number(price).toLocaleString('ru-RU')} ₽`
+    },
+    placeholder(seed) {
+      return `https://picsum.photos/seed/${seed}/1200/1400`
+    },
+  },
+  mounted() {
+    this.loadData()
+  }
+}).mount('#app')
+</script>
+{% endverbatim %}
+</body>
+</html>
